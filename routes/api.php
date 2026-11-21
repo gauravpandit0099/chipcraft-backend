@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Api\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
@@ -16,7 +17,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /* admin routes */
     Route::middleware('role:admin')->prefix('admin')->group(function () {
-        Route::get('/verify', fn () => ResponseHelper::success(['panel' => 'admin'], 'Admin verified'));
+        
+        /* get admin dashboard data */
+        Route::get('/dashboard-data', [DashboardController::class, 'index'])->name('dashboard-data');
     });
 
     /* user routes */
