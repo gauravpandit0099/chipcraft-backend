@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,12 @@ Route::middleware('auth:sanctum')->group(function () {
         
         /* get admin dashboard data */
         Route::get('/dashboard-data', [DashboardController::class, 'index'])->name('dashboard-data');
+
+        /* cateory api */
+        Route::get('/categories-list', [CategoryController::class, 'index'])->name('categories-list');
+        Route::post('/store-categories', [CategoryController::class, 'store'])->name('store-categories');
+        Route::put('/update-categories/{id}', [CategoryController::class, 'update'])->name('update-categories');
+        Route::delete('/delete-categories/{id}', [CategoryController::class, 'destroy'])->name('delete-categories');
     });
 
     /* user routes */
