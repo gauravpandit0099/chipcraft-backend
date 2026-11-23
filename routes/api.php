@@ -1,8 +1,9 @@
 <?php
 
 use App\Helpers\ResponseHelper;
-use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\CategoryController;
+use App\Http\Controllers\Api\Admin\SubcategoryController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
@@ -27,6 +28,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/store-categories', [CategoryController::class, 'store'])->name('store-categories');
         Route::put('/update-categories/{id}', [CategoryController::class, 'update'])->name('update-categories');
         Route::delete('/delete-categories/{id}', [CategoryController::class, 'destroy'])->name('delete-categories');
+
+        /* sub categories routes */
+        Route::get('/subcategories-list', [SubcategoryController::class, 'index'])->name('subcategories-list');
+        Route::post('/store-subcategories', [SubcategoryController::class, 'store'])->name('store-subcategories');
+        Route::put('/update-subcategories/{id}', [SubcategoryController::class, 'update'])->name('update-subcategories');
+        Route::delete('/delete-subcategories/{id}', [SubcategoryController::class, 'destroy'])->name('delete-subcategories');
     });
 
     /* user routes */
