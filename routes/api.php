@@ -3,6 +3,7 @@
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\CategoryController;
+use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\SubcategoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/store-subcategories', [SubcategoryController::class, 'store'])->name('store-subcategories');
         Route::put('/update-subcategories/{id}', [SubcategoryController::class, 'update'])->name('update-subcategories');
         Route::delete('/delete-subcategories/{id}', [SubcategoryController::class, 'destroy'])->name('delete-subcategories');
+
+        /* product route */
+        Route::get('/products-list', [ProductController::class, 'index'])->name('products-list');
+        Route::get('/product-detail/{id}', [ProductController::class, 'show'])->name('product-detail');
+        Route::post('/store-products', [ProductController::class, 'store'])->name('store-products');
+        Route::post('/update-products/{id}', [ProductController::class, 'update'])->name('update-products');
+        Route::delete('/delete-products/{id}', [ProductController::class, 'destroy'])->name('delete-products');
     });
 
     /* user routes */
