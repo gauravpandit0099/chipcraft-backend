@@ -6,7 +6,7 @@ use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class ProductService
@@ -43,16 +43,16 @@ class ProductService
         }
     }
 
-    /* create product with cover and gallery */
+    /* create product with public folder images */
     public function create(array $data, Request $request): Product
     {
         DB::beginTransaction();
         try {
-            $coverPath = $request->file('cover_image')->store('products/covers', 'public');
+            $coverPath = $this->uploadPublicFile($request->file('cover_image'), 'products/cover');
             $galleryPaths = [];
             if ($request->hasFile('gallery_images')) {
                 foreach ($request->file('gallery_images') as $file) {
-                    $galleryPaths[] = $file->store('products/gallery', 'public');
+                    $galleryPaths[] = $this->uploadPublicFile($file, 'products/galleryImages');
                 }
             }
             $product = Product::create([
@@ -74,7 +74,7 @@ class ProductService
         }
     }
 
-    /* update product and optional images */
+    /* update product and public folder images */
     public function update(int $id, array $data, Request $request): ?Product
     {
         DB::beginTransaction();
@@ -86,15 +86,13 @@ class ProductService
             }
             $coverPath = $product->image;
             if ($request->hasFile('cover_image')) {
-                if ($coverPath) {
-                    Storage::disk('public')->delete($coverPath);
-                }
-                $coverPath = $request->file('cover_image')->store('products/covers', 'public');
+                $this->deletePublicFile($coverPath);
+                $coverPath = $this->uploadPublicFile($request->file('cover_image'), 'products/cover');
             }
             $galleryPaths = $product->gallery_images ?? [];
             if ($request->hasFile('gallery_images')) {
                 foreach ($request->file('gallery_images') as $file) {
-                    $galleryPaths[] = $file->store('products/gallery', 'public');
+                    $galleryPaths[] = $this->uploadPublicFile($file, 'products/galleryImages');
                 }
             }
             $product->update([
@@ -116,7 +114,7 @@ class ProductService
         }
     }
 
-    /* delete product and stored images */
+    /* delete product and public files */
     public function delete(int $id): bool
     {
         DB::beginTransaction();
@@ -126,11 +124,9 @@ class ProductService
                 DB::rollBack();
                 return false;
             }
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
+            $this->deletePublicFile($product->image);
             foreach ($product->gallery_images ?? [] as $img) {
-                Storage::disk('public')->delete($img);
+                $this->deletePublicFile($img);
             }
             $product->delete();
             DB::commit();
@@ -138,6 +134,26 @@ class ProductService
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
+        }
+    }
+
+    /* move uploaded file to public folder */
+    private function uploadPublicFile($file, string $folder): string
+    {
+        $dir = public_path($folder);
+        if (!File::exists($dir)) {
+            File::makeDirectory($dir, 0755, true);
+        }
+        $filename = Str::random(24) . '.' . $file->getClientOriginalExtension();
+        $file->move($dir, $filename);
+        return $folder . '/' . $filename;
+    }
+
+    /* remove file from public folder */
+    private function deletePublicFile(?string $relativePath): void
+    {
+        if ($relativePath && File::exists(public_path($relativePath))) {
+            File::delete(public_path($relativePath));
         }
     }
 }

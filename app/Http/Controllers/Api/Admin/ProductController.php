@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreProductRequest;
+use App\Http\Requests\Admin\UpateProductRequest;
 use App\Http\Requests\Admin\UpdateProductRequest;
 use App\Services\Admin\ProductService;
 use Illuminate\Http\JsonResponse;
@@ -54,7 +55,7 @@ class ProductController extends Controller
     }
 
     /* update existing product */
-    public function update(UpdateProductRequest $request, int $id): JsonResponse
+    public function update(UpateProductRequest $request, int $id): JsonResponse
     {
         try {
             $product = $this->productService->update($id, $request->validated(), $request);
