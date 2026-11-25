@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\SubcategoryController;
+use App\Http\Controllers\Api\User\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
@@ -12,6 +13,10 @@ use App\Http\Controllers\Api\AuthController;
 /* public authentication routes */
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+/* user dashboard api */
+Route::get('/user-dashboard', [UserDashboardController::class, 'home'])->name('user-dashboard');
+Route::get('/products-list', [UserDashboardController::class, 'products'])->name('products-list');
 
 /* protected authenticated routes */
 Route::middleware('auth:sanctum')->group(function () {
