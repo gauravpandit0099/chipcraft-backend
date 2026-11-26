@@ -74,7 +74,7 @@ class ProductService
         }
     }
 
-    /* update product and public folder images */
+    /* update product and manage gallery images */
     public function update(int $id, array $data, Request $request): ?Product
     {
         DB::beginTransaction();
@@ -89,7 +89,17 @@ class ProductService
                 $this->deletePublicFile($coverPath);
                 $coverPath = $this->uploadPublicFile($request->file('cover_image'), 'products/cover');
             }
-            $galleryPaths = $product->gallery_images ?? [];
+            $removedImages = $data['removed_gallery_images'] ?? [];
+            $galleryPaths = array_values(array_filter(
+                $product->gallery_images ?? [],
+                function ($img) use ($removedImages) {
+                    if (in_array($img, $removedImages, true)) {
+                        $this->deletePublicFile($img);
+                        return false;
+                    }
+                    return true;
+                }
+            ));
             if ($request->hasFile('gallery_images')) {
                 foreach ($request->file('gallery_images') as $file) {
                     $galleryPaths[] = $this->uploadPublicFile($file, 'products/galleryImages');

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpateProductRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     /* allow admin product update */
     public function authorize(): bool
@@ -28,6 +28,8 @@ class UpateProductRequest extends FormRequest
             'in_stock' => 'required|boolean',
             'cover_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'removed_gallery_images' => 'nullable|array',
+            'removed_gallery_images.*' => 'string',
         ];
     }
 
