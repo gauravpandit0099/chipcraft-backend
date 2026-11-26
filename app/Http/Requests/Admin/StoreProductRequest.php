@@ -27,6 +27,7 @@ class StoreProductRequest extends FormRequest
             'in_stock' => 'required|boolean',
             'cover_image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'specifications' => 'nullable|string',
         ];
     }
 

@@ -18,6 +18,7 @@ class Product extends Model
         'in_stock',
         'image',
         'gallery_images',
+        'specifications'
     ];
 
     /* cast stock and gallery json */
@@ -26,6 +27,7 @@ class Product extends Model
         return [
             'in_stock' => 'boolean',
             'gallery_images' => 'array',
+            'specifications' => 'array',
         ];
     }
 

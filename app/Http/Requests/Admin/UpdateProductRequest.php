@@ -30,6 +30,7 @@ class UpdateProductRequest extends FormRequest
             'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'removed_gallery_images' => 'nullable|array',
             'removed_gallery_images.*' => 'string',
+            'specifications' => 'nullable|string',
         ];
     }
 

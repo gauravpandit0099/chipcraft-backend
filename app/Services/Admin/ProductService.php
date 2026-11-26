@@ -48,6 +48,7 @@ class ProductService
     {
         DB::beginTransaction();
         try {
+            $specs = !empty($data['specifications']) ? json_decode($data['specifications'], true) : [];
             $coverPath = $this->uploadPublicFile($request->file('cover_image'), 'products/cover');
             $galleryPaths = [];
             if ($request->hasFile('gallery_images')) {
@@ -65,6 +66,7 @@ class ProductService
                 'in_stock' => $data['in_stock'],
                 'image' => $coverPath,
                 'gallery_images' => $galleryPaths,
+                'specifications' => $specs,                
             ]);
             DB::commit();
             return $product->load(['category:id,name', 'subcategory:id,name']);
@@ -79,6 +81,7 @@ class ProductService
     {
         DB::beginTransaction();
         try {
+            $specs = !empty($data['specifications']) ? json_decode($data['specifications'], true) : [];
             $product = Product::find($id);
             if (!$product) {
                 DB::rollBack();
@@ -115,6 +118,7 @@ class ProductService
                 'in_stock' => $data['in_stock'],
                 'image' => $coverPath,
                 'gallery_images' => $galleryPaths,
+                'specifications' => $specs,  
             ]);
             DB::commit();
             return $product->load(['category:id,name', 'subcategory:id,name']);
